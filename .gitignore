@@ -1,0 +1,31 @@
+# ───────────────────────────────
+# Common ignores for all apps
+# ───────────────────────────────
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.vercel/
+
+
+# Environment & debug
+.env*
+npm-debug.log*
+.pnpm-debug.log*
+
+# IDE & system files
+.DS_Store
+.idea/
+.vscode/*
+.history/
+.cursor/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
