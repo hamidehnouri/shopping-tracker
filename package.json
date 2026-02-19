@@ -23,6 +23,8 @@
     ]
   },
   "scripts": {
+    "dev:frontend": "npm run dev --prefix apps/frontend",
+    "dev:backend": "npm run dev --prefix apps/backend",
     "prepare": "husky"
   }
 }
