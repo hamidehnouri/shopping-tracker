@@ -15,12 +15,15 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
-  // React rules only for JSX/TSX
   {
     files: ["**/*.{jsx,tsx}"],
     ...react.configs.flat.recommended,
     settings: {
       react: { version: "detect" },
+    },
+    rules: {
+      "react/react-in-jsx-scope": "off",
+      "react/jsx-uses-react": "off",
     },
   },
 
