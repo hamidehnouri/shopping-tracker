@@ -11,10 +11,6 @@ const pool = new Pool({
   port: Number(process.env.POSTGRES_PORT),
 });
 
-pool.on("connect", () => {
-  console.log("Connected to the database");
-});
-
 pool.on("error", (err) => {
   console.error("Database error:", err);
 });
