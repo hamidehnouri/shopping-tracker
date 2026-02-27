@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import type { CreateReceiptRequestDto } from "./receipt.dto";
+import { createReceipt } from "./receipt.service";
 import { receiptExtractJsonSchema } from "./receipt_extract.schema";
 import { openai } from "../../config/openai";
 
@@ -68,7 +69,9 @@ export async function extractReceiptController(
       item.rawLineText = item.rawLineText ?? null;
     }
 
-    res.status(200).json(dto);
+    const id = await createReceipt(dto);
+
+    res.status(201).json({ id, extracted: dto });
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : String(e);
     res.status(500).json({ error: message || "Extraction Failed" });
