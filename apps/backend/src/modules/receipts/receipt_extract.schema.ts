@@ -1,0 +1,45 @@
+export const receiptExtractJsonSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    storeName: { type: ["string", "null"] },
+    purchasedAt: { type: ["string", "null"] },
+    totalAmount: { type: ["number", "null"] },
+    currency: { type: ["string", "null"] },
+    rawText: { type: "string" },
+    items: {
+      type: "array",
+      minItems: 1,
+      items: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          itemIndex: { type: "integer", minimum: 1 },
+          descriptionRaw: { type: "string" },
+          totalPrice: { type: "number" },
+          quantity: { type: ["number", "null"] },
+          unitPrice: { type: ["number", "null"] },
+          vatClass: { type: ["string", "null"] },
+          rawLineText: { type: ["string", "null"] },
+        },
+        required: [
+          "itemIndex",
+          "descriptionRaw",
+          "totalPrice",
+          "quantity",
+          "unitPrice",
+          "vatClass",
+          "rawLineText",
+        ],
+      },
+    },
+  },
+  required: [
+    "storeName",
+    "purchasedAt",
+    "totalAmount",
+    "currency",
+    "rawText",
+    "items",
+  ],
+} as const;
