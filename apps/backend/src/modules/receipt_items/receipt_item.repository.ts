@@ -11,6 +11,10 @@ export const createReceiptItemsTable = `
     total_price NUMERIC(10, 2) NOT NULL,
     vat_class TEXT,
     raw_line_text TEXT,
+    department TEXT,
+    category TEXT,
+    subcategory TEXT,
+    product TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
 `;
@@ -25,6 +29,10 @@ export async function insertReceiptItem(
     unitPrice: number | null;
     totalPrice: number;
     vatClass: string | null;
+    department: string | null;
+    category: string | null;
+    subcategory: string | null;
+    product: string | null;
     rawLineText: string | null;
   },
 ): Promise<number> {
@@ -38,10 +46,14 @@ export async function insertReceiptItem(
     unit_price,
     total_price,
     vat_class,
+    department,
+    category,
+    subcategory,
+    product,
     raw_line_text
   )
-  VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
-  RETURNING *;
+  VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+  RETURNING id;
 `,
     [
       params.receiptId,
@@ -51,6 +63,10 @@ export async function insertReceiptItem(
       params.unitPrice,
       params.totalPrice,
       params.vatClass,
+      params.department,
+      params.category,
+      params.subcategory,
+      params.product,
       params.rawLineText,
     ],
   );
@@ -73,6 +89,10 @@ export async function getReceiptItemsByReceiptId(
     total_price,
     vat_class,
     raw_line_text,
+    department,
+    category,
+    subcategory,
+    product,
     created_at
   FROM receipt_items
   WHERE receipt_id = $1

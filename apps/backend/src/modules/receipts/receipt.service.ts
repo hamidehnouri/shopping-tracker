@@ -38,6 +38,10 @@ export async function createReceipt(
         unitPrice: item.unitPrice ?? null,
         totalPrice: item.totalPrice,
         vatClass: item.vatClass ?? null,
+        department: item.department ?? null,
+        category: item.category ?? null,
+        subcategory: item.subcategory ?? null,
+        product: item.product ?? null,
         rawLineText: item.rawLineText ?? null,
       });
     }
@@ -61,7 +65,7 @@ export async function getReceipts(): Promise<GetReceiptResponseDto[]> {
       id: row.id,
       storeName: row.store_name,
       purchasedAt: row.purchased_at,
-      totalAmount: row.total_amount,
+      totalAmount: row.total_amount === null ? null : Number(row.total_amount),
       currency: row.currency,
       rawText: row.raw_text,
       createdAt: row.created_at,
@@ -104,6 +108,10 @@ export async function getReceiptById(
         totalPrice: Number(itemRow.total_price),
         vatClass: itemRow.vat_class,
         rawLineText: itemRow.raw_line_text,
+        department: itemRow.department,
+        category: itemRow.category,
+        subcategory: itemRow.subcategory,
+        product: itemRow.product,
         createdAt: itemRow.created_at,
       })),
     };

@@ -36,10 +36,28 @@ export async function extractReceiptController(
               type: "text",
               text:
                 "Extract receipt data from the image and return ONLY JSON that matches the schema. " +
-                "IMPORTANT: Set rawText to the full text you can read from the receipt (even if imperfect). " +
+                "IMPORTANT: Set rawText to the full text you can read from the receipt. " +
                 "Find the purchase date/time and return purchasedAt as ISO-8601 if present, else null. " +
                 "If currency is missing, use EUR. " +
-                "Keep item names as they appear on the receipt in descriptionRaw.",
+                "Keep item names exactly as they appear on the receipt in descriptionRaw. " +
+                "Classify each item using the following hierarchy: department → category → subcategory → product. " +
+                "department: very broad store department such as grocery, household, apparel, electronics, beauty, or other. " +
+                "category: broad group inside a department. Examples: fruits, vegetables, dairy, meat, bakery, drinks, snacks, pantry, cleaning, clothing. " +
+                "subcategory: product family. Examples: citrus, apple, yogurt, cheese, bread_rolls, pickles, milk. " +
+                "product: normalized base item name (singular, lowercase). Examples: apple, orange, yogurt, milk, egg, bread, cucumber. " +
+                "Rules: " +
+                "- product must be singular and normalized (apple, orange, yogurt, egg). " +
+                "- Do NOT include color, flavor, brand, organic/bio labels, size, packaging, or adjectives in product. " +
+                "- Variants like 'red apple', 'blood orange', 'strawberry yogurt' should still have product 'apple', 'orange', 'yogurt'. " +
+                "- subcategory should group similar products (example: apple and pear → pome, orange and mandarin → citrus). " +
+                "Examples: " +
+                "'Apfel rot' → department: grocery, category: fruits, subcategory: pome, product: apple. " +
+                "'Blutorangen' → department: grocery, category: fruits, subcategory: citrus, product: orange. " +
+                "'Romatomaten' → department: grocery, category: vegetables, subcategory: nightshade, product: tomato. " +
+                "'Naturjoghurt' → department: grocery, category: dairy, subcategory: yogurt, product: yogurt. " +
+                "'Eier Größe M' → department: grocery, category: dairy, subcategory: eggs, product: egg. " +
+                "'Brötchen Weltm.' → department: grocery, category: bakery, subcategory: bread_rolls, product: bread_roll. " +
+                "If classification is unclear, set department='other', category='other', subcategory=null, product=null.",
             },
             {
               type: "image_url",
