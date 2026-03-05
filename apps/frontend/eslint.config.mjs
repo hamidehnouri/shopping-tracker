@@ -3,7 +3,7 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import eslintNextPlugin from "@next/eslint-plugin-next";
 
-import base from "../../eslint-config.mjs";
+import base from "@/eslint-config.mjs";
 
 export default defineConfig([
   ...base,
