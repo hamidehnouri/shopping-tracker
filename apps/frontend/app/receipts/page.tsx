@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { ReceiptListItem } from "@/types/receipt";
 import ReceiptList from "@/components/receipts/ReceiptList";
 import ScanReceiptButton from "@/components/receipts/ScanReceiptButton";
-import { getReceipts } from "@/lib/api";
+import { deleteReceipt, getReceipts } from "@/lib/api";
 
 export default function ReceiptsPage() {
   const [receipts, setReceipts] = useState<ReceiptListItem[]>([]);
@@ -34,6 +34,14 @@ export default function ReceiptsPage() {
     router.push("/receipts/process");
   };
 
+  const handleDeleteReceipt = async (id: number) => {
+    if (!confirm("Delete this receipt?")) return;
+
+    await deleteReceipt(id);
+
+    setReceipts((prev) => prev.filter((r) => r.id !== id));
+  };
+
   return (
     <main className="mx-auto min-h-screen max-w-md bg-gray-50 pb-24">
       <div className="p-4">
@@ -42,6 +50,7 @@ export default function ReceiptsPage() {
         <ReceiptList
           receipts={receipts}
           onRowClick={(id) => router.push(`/receipts/${id}`)}
+          onRemove={(id) => handleDeleteReceipt(id)}
         />
       </div>
 

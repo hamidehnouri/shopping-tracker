@@ -36,3 +36,13 @@ export async function getReceipt(id: string) {
 
   return res.json();
 }
+
+export async function deleteReceipt(id: number) {
+  const res = await fetch(`${API_BASE}/api/receipts/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to delete receipt");
+  }
+}

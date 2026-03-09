@@ -119,3 +119,21 @@ export async function getReceiptById(
     client.release();
   }
 }
+
+export async function deleteReceiptById(id: number) {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    await client.query("DELETE FROM receipt_items WHERE receipt_id = $1", [id]);
+    await client.query("DELETE FROM receipts WHERE id = $1", [id]);
+
+    await client.query("COMMIT");
+  } catch (e) {
+    await client.query("ROLLBACK");
+    throw e;
+  } finally {
+    client.release();
+  }
+}

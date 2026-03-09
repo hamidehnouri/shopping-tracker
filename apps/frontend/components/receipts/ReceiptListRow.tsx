@@ -1,15 +1,18 @@
 import { capitalize, formatDate, formatMoney, cn } from "@/lib/utils";
 import type { ReceiptListItem } from "@/types/receipt";
+import { Trash2 } from "lucide-react";
 
 type ReceiptListRowProps = {
   receipt: ReceiptListItem;
   onClick?: (id: number) => void;
+  onRemove?: (id: number) => void;
   showBorder?: boolean;
 };
 
 export default function ReceiptListRow({
   receipt,
   onClick,
+  onRemove,
   showBorder = true,
 }: ReceiptListRowProps) {
   return (
@@ -34,7 +37,16 @@ export default function ReceiptListRow({
         <div className="font-medium text-gray-900">
           {formatMoney(receipt.totalAmount, receipt.currency)}
         </div>
-        <div className="mt-1 text-xs text-gray-400">#{receipt.id}</div>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove?.(receipt.id);
+          }}
+          className="p-2 text-gray-400 hover:text-red-500"
+        >
+          <Trash2 className="h-5 w-5" />
+        </button>
       </div>
     </button>
   );
