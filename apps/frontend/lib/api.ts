@@ -26,3 +26,13 @@ export async function getReceipts() {
 
   return res.json();
 }
+
+export async function getReceipt(id: string) {
+  const res = await fetch(`${API_BASE}/api/receipts/${id}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) return null;
+
+  return res.json();
+}

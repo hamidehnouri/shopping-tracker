@@ -6,3 +6,11 @@ export type ReceiptListItem = {
   currency: string;
   createdAt: string;
 };
+
+export type ReceiptItem = {
+  id: number;
+  descriptionRaw: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+};
