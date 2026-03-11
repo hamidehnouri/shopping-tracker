@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { ReceiptListItem } from "@/types/receipt";
 import ReceiptList from "@/components/receipts/ReceiptList";
 import ScanReceiptButton from "@/components/receipts/ScanReceiptButton";
-import { deleteReceipt, getReceipts } from "@/lib/api";
+import { deleteReceipt, extractReceipt, getReceipts } from "@/lib/api";
 
 export default function ReceiptsPage() {
   const [receipts, setReceipts] = useState<ReceiptListItem[]>([]);
@@ -19,19 +19,22 @@ export default function ReceiptsPage() {
   }, []);
 
   const handleImageSelected = async (file: File) => {
-    const buffer = await file.arrayBuffer();
-    const bytes = Array.from(new Uint8Array(buffer));
+    try {
+      router.push("/receipts/process");
 
-    sessionStorage.setItem(
-      "pendingReceiptImage",
-      JSON.stringify({
-        name: file.name,
-        type: file.type,
-        bytes,
-      }),
-    );
+      const extracted = await extractReceipt(file);
 
-    router.push("/receipts/process");
+      sessionStorage.setItem(
+        "pendingExtractedReceipt",
+        JSON.stringify(extracted),
+      );
+
+      router.replace("/receipts/confirm");
+    } catch (error) {
+      console.error(error);
+      router.replace("/receipts");
+      alert("Could not extract receipt.");
+    }
   };
 
   const handleDeleteReceipt = async (id: number) => {
@@ -43,10 +46,9 @@ export default function ReceiptsPage() {
   };
 
   return (
-    <main className="mx-auto min-h-screen max-w-md bg-gray-50 pb-24">
+    <div className="pb-24">
       <div className="p-4">
         <h1 className="mb-4 text-2xl font-semibold">Receipts</h1>
-
         <ReceiptList
           receipts={receipts}
           onRowClick={(id) => router.push(`/receipts/${id}`)}
@@ -57,6 +59,6 @@ export default function ReceiptsPage() {
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2">
         <ScanReceiptButton onImageSelected={handleImageSelected} />
       </div>
-    </main>
+    </div>
   );
 }
