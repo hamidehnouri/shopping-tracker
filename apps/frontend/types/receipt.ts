@@ -1,6 +1,6 @@
 export type ReceiptItem = {
   id: number;
-  descriptionRaw: string;
+  label: string;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
@@ -18,7 +18,7 @@ export type ReceiptListItem = {
 
 export type ReceiptDisplayItem = {
   id?: number;
-  descriptionRaw: string;
+  label: string;
   quantity: number;
   unitPrice: number;
   totalPrice: number;

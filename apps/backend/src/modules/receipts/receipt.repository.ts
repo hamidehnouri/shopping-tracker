@@ -7,7 +7,6 @@ export const createReceiptsTable = `
     purchased_at TIMESTAMP,
     total_amount NUMERIC(12, 2),
     currency CHAR(3) DEFAULT 'EUR',
-    raw_text TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
 `;
@@ -19,7 +18,6 @@ export async function insertReceipt(
     purchasedAt: Date | null;
     totalAmount: number | null;
     currency: string;
-    rawText: string | null;
   },
 ): Promise<number> {
   const result = await client.query(
@@ -28,19 +26,12 @@ export async function insertReceipt(
     store_name,
     purchased_at,
     total_amount,
-    currency,
-    raw_text
+    currency
   )
-  VALUES ($1, $2, $3, $4, $5)
+  VALUES ($1, $2, $3, $4)
   RETURNING id
 `,
-    [
-      params.storeName,
-      params.purchasedAt,
-      params.totalAmount,
-      params.currency,
-      params.rawText,
-    ],
+    [params.storeName, params.purchasedAt, params.totalAmount, params.currency],
   );
   return result.rows[0].id as number;
 }
@@ -53,7 +44,6 @@ export async function selectReceipts(client: PoolClient) {
     purchased_at,
     total_amount,
     currency,
-    raw_text,
     created_at
   FROM receipts
   ORDER BY created_at DESC
@@ -70,7 +60,6 @@ export async function selectReceiptById(client: PoolClient, receiptId: number) {
     purchased_at,
     total_amount,
     currency,
-    raw_text,
     created_at
   FROM receipts
   WHERE id = $1

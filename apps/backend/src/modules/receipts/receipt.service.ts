@@ -9,8 +9,8 @@ import {
   selectReceiptById,
 } from "./receipt.repository";
 import {
-  insertReceiptItem,
   getReceiptItemsByReceiptId,
+  insertReceiptItem,
 } from "../receipt_items/receipt_item.repository";
 
 export async function createReceipt(
@@ -26,23 +26,19 @@ export async function createReceipt(
       purchasedAt: dto.purchasedAt ? new Date(dto.purchasedAt) : null,
       totalAmount: dto.totalAmount ?? null,
       currency: dto.currency ?? "EUR",
-      rawText: dto.rawText ?? null,
     });
 
     for (const item of dto.items) {
       await insertReceiptItem(client, {
         receiptId,
-        itemIndex: item.itemIndex,
-        descriptionRaw: item.descriptionRaw,
-        quantity: item.quantity ?? 1,
+        label: item.label,
+        quantity: item.quantity,
         unitPrice: item.unitPrice ?? null,
         totalPrice: item.totalPrice,
-        vatClass: item.vatClass ?? null,
-        department: item.department ?? null,
-        category: item.category ?? null,
-        subcategory: item.subcategory ?? null,
-        product: item.product ?? null,
-        rawLineText: item.rawLineText ?? null,
+        department: null,
+        category: null,
+        subcategory: null,
+        product: null,
       });
     }
 
@@ -58,6 +54,7 @@ export async function createReceipt(
 
 export async function getReceipts(): Promise<GetReceiptResponseDto[]> {
   const client = await pool.connect();
+
   try {
     const rows = await selectReceipts(client);
 
@@ -67,7 +64,6 @@ export async function getReceipts(): Promise<GetReceiptResponseDto[]> {
       purchasedAt: row.purchased_at,
       totalAmount: row.total_amount === null ? null : Number(row.total_amount),
       currency: row.currency,
-      rawText: row.raw_text,
       createdAt: row.created_at,
       items: [],
     }));
@@ -80,34 +76,31 @@ export async function getReceiptById(
   receiptId: number,
 ): Promise<GetReceiptResponseDto | null> {
   const client = await pool.connect();
+
   try {
-    const ReceiptRow = await selectReceiptById(client, receiptId);
-    if (!ReceiptRow) return null;
+    const receiptRow = await selectReceiptById(client, receiptId);
+    if (!receiptRow) return null;
 
     const itemRows = await getReceiptItemsByReceiptId(client, receiptId);
 
     return {
-      id: ReceiptRow.id,
-      storeName: ReceiptRow.store_name,
-      purchasedAt: ReceiptRow.purchased_at,
+      id: receiptRow.id,
+      storeName: receiptRow.store_name,
+      purchasedAt: receiptRow.purchased_at,
       totalAmount:
-        ReceiptRow.total_amount === null
+        receiptRow.total_amount === null
           ? null
-          : Number(ReceiptRow.total_amount),
-      currency: ReceiptRow.currency,
-      rawText: ReceiptRow.raw_text,
-      createdAt: ReceiptRow.created_at,
+          : Number(receiptRow.total_amount),
+      currency: receiptRow.currency,
+      createdAt: receiptRow.created_at,
       items: itemRows.map((itemRow) => ({
         id: itemRow.id,
         receiptId: itemRow.receipt_id,
-        itemIndex: itemRow.item_index,
-        descriptionRaw: itemRow.description_raw,
+        label: itemRow.label,
         quantity: itemRow.quantity === null ? 1 : Number(itemRow.quantity),
         unitPrice:
           itemRow.unit_price === null ? null : Number(itemRow.unit_price),
         totalPrice: Number(itemRow.total_price),
-        vatClass: itemRow.vat_class,
-        rawLineText: itemRow.raw_line_text,
         department: itemRow.department,
         category: itemRow.category,
         subcategory: itemRow.subcategory,
@@ -125,10 +118,7 @@ export async function deleteReceiptById(id: number) {
 
   try {
     await client.query("BEGIN");
-
-    await client.query("DELETE FROM receipt_items WHERE receipt_id = $1", [id]);
     await client.query("DELETE FROM receipts WHERE id = $1", [id]);
-
     await client.query("COMMIT");
   } catch (e) {
     await client.query("ROLLBACK");

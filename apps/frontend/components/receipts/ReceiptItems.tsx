@@ -31,10 +31,10 @@ export default function ReceiptItems({ receipt }: ReceiptItemsProps) {
         <div className="space-y-2">
           {receipt.items.map((item, index) => (
             <div
-              key={item.id ?? `${item.descriptionRaw}-${index}`}
+              key={`${item.label}-${index}`}
               className="flex items-center justify-between rounded-lg border border-gray-100 px-3 py-2"
             >
-              <span>{item.descriptionRaw}</span>
+              <span>{item.label}</span>
               <span className="text-sm text-gray-500">
                 {item.quantity} ×{" "}
                 {formatMoney(item.unitPrice, receipt.currency)} ={" "}

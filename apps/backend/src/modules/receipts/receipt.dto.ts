@@ -1,14 +1,22 @@
 import {
+  ExtractedReceiptItemDto,
   CreateReceiptItemRequestDto,
   GetReceiptItemResponseDto,
 } from "../receipt_items/receipt_item.dto";
 
+export type ExtractedReceiptDto = {
+  storeName: string | null;
+  purchasedAt: string | null;
+  totalAmount: number | null;
+  currency: string;
+  items: ExtractedReceiptItemDto[];
+};
+
 export type CreateReceiptRequestDto = {
   storeName?: string | null;
-  purchasedAt?: string | null; // ISO string
+  purchasedAt?: string | null;
   totalAmount?: number | null;
   currency?: string | null;
-  rawText?: string | null;
   items: CreateReceiptItemRequestDto[];
 };
 
@@ -18,11 +26,6 @@ export type GetReceiptResponseDto = {
   purchasedAt: Date | null;
   totalAmount: number | null;
   currency: string;
-  rawText: string | null;
   createdAt: Date;
   items: GetReceiptItemResponseDto[];
-};
-
-export type CreateReceiptResponseDto = {
-  id: number;
 };

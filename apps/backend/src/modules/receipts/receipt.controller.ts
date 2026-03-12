@@ -17,7 +17,7 @@ export async function createReceiptController(
     res.status(201).json({ id });
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : String(e);
-    res.status(400).json({ error: message || "Bad request" });
+    res.status(500).json({ error: message || "Create receipt failed" });
   }
 }
 

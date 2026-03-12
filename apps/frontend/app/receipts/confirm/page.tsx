@@ -5,11 +5,6 @@ import { useRouter } from "next/navigation";
 import ReceiptItems from "@/components/receipts/ReceiptItems";
 import type { ExtractedReceipt } from "@/types/receipt";
 
-type PendingReceipt = {
-  id: number;
-  extracted: ExtractedReceipt;
-};
-
 export default function ReceiptConfirmPage() {
   const [receipt, setReceipt] = useState<ExtractedReceipt | null>(null);
   const router = useRouter();
@@ -21,8 +16,9 @@ export default function ReceiptConfirmPage() {
       return;
     }
 
-    const parsed: PendingReceipt = JSON.parse(raw);
-    setReceipt(parsed.extracted);
+    const parsed: ExtractedReceipt = JSON.parse(raw);
+
+    setReceipt(parsed);
   }, [router]);
 
   if (!receipt) return null;

@@ -1,27 +1,24 @@
-export type CreateReceiptItemRequestDto = {
-  itemIndex: number;
-  descriptionRaw: string;
+export type ExtractedReceiptItemDto = {
+  label: string;
+  quantity: number;
+  unitPrice: number;
   totalPrice: number;
-  quantity?: number;
-  unitPrice?: number | null;
-  vatClass?: string | null;
-  department?: string | null;
-  category?: string | null;
-  subcategory?: string | null;
-  product?: string | null;
-  rawLineText?: string | null;
+};
+
+export type CreateReceiptItemRequestDto = {
+  label: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
 };
 
 export type GetReceiptItemResponseDto = {
   id: number;
   receiptId: number;
-  itemIndex: number;
-  descriptionRaw: string;
+  label: string;
   quantity: number;
   unitPrice: number | null;
   totalPrice: number;
-  vatClass: string | null;
-  rawLineText: string | null;
   department: string | null;
   category: string | null;
   subcategory: string | null;
