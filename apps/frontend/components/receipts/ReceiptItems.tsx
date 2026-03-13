@@ -18,21 +18,15 @@ export default function ReceiptItems({ receipt }: ReceiptItemsProps) {
             <span className="font-medium">Date:</span>{" "}
             {formatDate(receipt.purchasedAt)}
           </div>
-          <div>
-            <span className="font-medium">Total:</span>{" "}
-            {formatMoney(receipt.totalAmount, receipt.currency)}
-          </div>
         </div>
       </div>
 
       <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-        <h2 className="mb-3 font-semibold">Items</h2>
-
         <div className="space-y-2">
           {receipt.items.map((item, index) => (
             <div
               key={`${item.label}-${index}`}
-              className="flex items-center justify-between rounded-lg border border-gray-100 px-3 py-2"
+              className="flex items-center justify-between px-3 py-1"
             >
               <span>{item.label}</span>
               <span className="text-sm text-gray-500">
@@ -42,6 +36,10 @@ export default function ReceiptItems({ receipt }: ReceiptItemsProps) {
               </span>
             </div>
           ))}
+        </div>
+        <div className="mt-4 flex items-center justify-between px-3 py-2 border-t border-gray-200">
+          <span className="font-medium">Total:</span>{" "}
+          {formatMoney(receipt.totalAmount, receipt.currency)}
         </div>
       </div>
     </div>

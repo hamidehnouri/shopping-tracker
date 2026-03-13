@@ -1,16 +1,19 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type ReactNode, type ChangeEvent } from "react";
+import { FabButton } from "@/components/ui/FabButton";
 import { ScanText } from "lucide-react";
 
 type ScanReceiptButtonProps = {
   onImageSelected?: (file: File) => void | Promise<void>;
   disabled?: boolean;
+  children?: ReactNode;
 };
 
 export default function ScanReceiptButton({
   onImageSelected,
   disabled = false,
+  children,
 }: ScanReceiptButtonProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -18,12 +21,11 @@ export default function ScanReceiptButton({
     if (!disabled) inputRef.current?.click();
   };
 
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     await onImageSelected?.(file);
-
     event.target.value = "";
   };
 
@@ -38,14 +40,13 @@ export default function ScanReceiptButton({
         onChange={handleChange}
       />
 
-      <button
-        type="button"
-        onClick={openPicker}
-        disabled={disabled}
-        className="flex h-16 w-16 items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-lg transition hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        <ScanText className="h-7 w-7 text-gray-700" />
-      </button>
+      <div onClick={openPicker}>
+        {children ?? (
+          <FabButton disabled={disabled}>
+            <ScanText className="h-7 w-7 text-gray-700 transition-colors group-hover:text-violet-600" />
+          </FabButton>
+        )}
+      </div>
     </>
   );
 }

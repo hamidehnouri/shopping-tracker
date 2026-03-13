@@ -37,6 +37,22 @@ export async function getReceipt(id: string) {
   return res.json();
 }
 
+export async function createReceipt(receipt: unknown) {
+  const res = await fetch(`${API_BASE}/api/receipts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(receipt),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to save receipt");
+  }
+
+  return res.json();
+}
+
 export async function deleteReceipt(id: number) {
   const res = await fetch(`${API_BASE}/api/receipts/${id}`, {
     method: "DELETE",

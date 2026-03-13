@@ -4,29 +4,65 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ReceiptItems from "@/components/receipts/ReceiptItems";
 import type { ExtractedReceipt } from "@/types/receipt";
+import { Button } from "@/components/ui/Button";
+import { createReceipt } from "@/lib/api";
 
 export default function ReceiptConfirmPage() {
   const [receipt, setReceipt] = useState<ExtractedReceipt | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const raw = sessionStorage.getItem("pendingExtractedReceipt");
-    if (!raw) {
-      router.replace("/receipts");
-      return;
+  const onSave = async () => {
+    if (!receipt) return;
+
+    try {
+      setIsSaving(true);
+      await createReceipt(receipt);
+      sessionStorage.removeItem("pendingExtractedReceipt");
+      router.push("/receipts");
+    } catch (error) {
+      console.error("Failed to save receipt:", error);
+    } finally {
+      setIsSaving(false);
     }
+  };
 
-    const parsed: ExtractedReceipt = JSON.parse(raw);
+  const onRetry = () => {
+    sessionStorage.removeItem("pendingExtractedReceipt");
+    router.push("/receipts");
+  };
 
-    setReceipt(parsed);
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("pendingExtractedReceipt");
+
+      if (!raw) {
+        router.replace("/receipts");
+        return;
+      }
+
+      const parsed: ExtractedReceipt = JSON.parse(raw);
+      setReceipt(parsed);
+    } catch (error) {
+      console.error("Failed to load pending receipt:", error);
+      router.replace("/receipts");
+    }
   }, [router]);
 
   if (!receipt) return null;
 
   return (
     <>
-      <h1 className="mb-4 text-2xl font-semibold">Confirm receipt</h1>
       <ReceiptItems receipt={receipt} />
+
+      <div className="fixed bottom-0 left-0 right-0 flex justify-end gap-4 border-t border-gray-200 bg-white px-6 py-4">
+        <Button variant="outline" onClick={onRetry} disabled={isSaving}>
+          Retry
+        </Button>
+        <Button onClick={onSave} disabled={isSaving}>
+          {isSaving ? "Saving..." : "Save"}
+        </Button>
+      </div>
     </>
   );
 }
