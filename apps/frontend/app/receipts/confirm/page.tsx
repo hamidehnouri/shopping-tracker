@@ -18,7 +18,8 @@ export default function ReceiptConfirmPage() {
     try {
       setIsSaving(true);
       await createReceipt(receipt);
-      sessionStorage.removeItem("pendingExtractedReceipt");
+      //TDO: uncomment this when we want to clear the pending receipt after saving
+      //sessionStorage.removeItem("pendingExtractedReceipt");
       router.push("/receipts");
     } catch (error) {
       console.error("Failed to save receipt:", error);

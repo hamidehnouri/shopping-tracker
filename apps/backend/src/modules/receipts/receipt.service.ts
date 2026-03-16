@@ -12,16 +12,21 @@ import {
   getReceiptItemsByReceiptId,
   insertReceiptItem,
 } from "../receipt_items/receipt_item.repository";
+import { classifyReceiptLabels } from "./classify/receipt.classify_ai.service";
+import { categorizeReceiptItems } from "./classify/receipt.classify.service";
 
 export async function createReceipt(
   dto: CreateReceiptRequestDto,
 ): Promise<number> {
   const client = await pool.connect();
 
+  let receiptId!: number;
+  const labels: string[] = [];
+
   try {
     await client.query("BEGIN");
 
-    const receiptId = await insertReceipt(client, {
+    receiptId = await insertReceipt(client, {
       storeName: dto.storeName ?? null,
       purchasedAt: dto.purchasedAt ? new Date(dto.purchasedAt) : null,
       totalAmount: dto.totalAmount ?? null,
@@ -29,6 +34,8 @@ export async function createReceipt(
     });
 
     for (const item of dto.items) {
+      labels.push(item.label);
+
       await insertReceiptItem(client, {
         receiptId,
         label: item.label,
@@ -43,13 +50,23 @@ export async function createReceipt(
     }
 
     await client.query("COMMIT");
-    return receiptId;
   } catch (e) {
     await client.query("ROLLBACK");
     throw e;
   } finally {
     client.release();
   }
+
+  try {
+    if (labels.length > 0) {
+      const classified = await classifyReceiptLabels(labels);
+      await categorizeReceiptItems(receiptId, classified);
+    }
+  } catch (error) {
+    console.error("Receipt categorization failed:", error);
+  }
+
+  return receiptId;
 }
 
 export async function getReceipts(): Promise<GetReceiptResponseDto[]> {

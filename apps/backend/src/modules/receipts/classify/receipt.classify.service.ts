@@ -1,12 +1,6 @@
 import pool from "../../../config/db";
 import { getReceiptItemsByReceiptId } from "../../receipt_items/receipt_item.repository";
-
-type ReceiptItemClassification = {
-  department: string | null;
-  category: string | null;
-  subcategory: string | null;
-  product: string | null;
-};
+import type { ReceiptItemClassification } from "./receipt.classify_ai.service";
 
 export async function categorizeReceiptItems(
   receiptId: number,
