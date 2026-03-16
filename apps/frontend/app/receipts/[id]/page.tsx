@@ -1,5 +1,5 @@
 import ReceiptItems from "@/components/receipts/ReceiptItems";
-import { LinkButton } from "@/components/ui/Button";
+import { LinkButton } from "@/components/ui/button/Button";
 import { getReceipt } from "@/lib/api";
 import { notFound } from "next/navigation";
 

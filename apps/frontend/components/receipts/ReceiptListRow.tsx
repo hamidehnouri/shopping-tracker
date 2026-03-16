@@ -1,6 +1,7 @@
 import { capitalize, formatDate, formatMoney, cn } from "@/lib/utils";
 import type { ReceiptListItem } from "@/types/receipt";
 import { Trash } from "lucide-react";
+import { IconButton } from "@/components/ui/button/IconButton";
 
 type ReceiptListRowProps = {
   receipt: ReceiptListItem;
@@ -42,16 +43,16 @@ export default function ReceiptListRow({
           </div>
         </div>
       </button>
-      <button
-        type="button"
+
+      <IconButton
+        variant="danger"
         onClick={(e) => {
           e.stopPropagation();
           onRemove?.(receipt.id);
         }}
-        className="p-2 text-gray-400 hover:text-red-500"
       >
         <Trash className="h-5 w-5" />
-      </button>
+      </IconButton>
     </div>
   );
 }

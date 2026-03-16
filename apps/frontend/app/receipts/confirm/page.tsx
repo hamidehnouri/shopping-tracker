@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ReceiptItems from "@/components/receipts/ReceiptItems";
 import type { ExtractedReceipt } from "@/types/receipt";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button/Button";
 import { createReceipt } from "@/lib/api";
 
 export default function ReceiptConfirmPage() {

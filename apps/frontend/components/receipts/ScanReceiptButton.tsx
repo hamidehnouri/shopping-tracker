@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode, type ChangeEvent } from "react";
-import { FabButton } from "@/components/ui/FabButton";
+import { FabButton } from "@/components/ui/button/FabButton";
 import { ScanText } from "lucide-react";
 
 type ScanReceiptButtonProps = {
