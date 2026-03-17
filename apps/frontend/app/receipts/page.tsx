@@ -6,7 +6,7 @@ import ReceiptList from "@/components/receipts/ReceiptList";
 import ScanReceiptButton from "@/components/receipts/ScanReceiptButton";
 import { H1 } from "@/components/ui/Typography";
 import type { ReceiptListItem } from "@/types/receipt";
-import { deleteReceipt, extractReceipt, getReceipts } from "@/lib/api";
+import { deleteReceipt, scanReceipt, getReceipts } from "@/lib/api";
 
 export default function ReceiptsPage() {
   const [receipts, setReceipts] = useState<ReceiptListItem[]>([]);
@@ -29,18 +29,15 @@ export default function ReceiptsPage() {
     try {
       router.push("/receipts/process");
 
-      const extracted = await extractReceipt(file);
+      const scanned = await scanReceipt(file);
 
-      sessionStorage.setItem(
-        "pendingExtractedReceipt",
-        JSON.stringify(extracted),
-      );
+      sessionStorage.setItem("pendingScannedReceipt", JSON.stringify(scanned));
 
       router.replace("/receipts/confirm");
     } catch (error) {
-      console.error("Failed to extract receipt:", error);
+      console.error("Failed to scan receipt:", error);
       router.replace("/receipts");
-      alert("Could not extract receipt.");
+      alert("Could not scan receipt.");
     }
   };
 

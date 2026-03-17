@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ReceiptItems from "@/components/receipts/ReceiptItems";
-import type { ExtractedReceipt } from "@/types/receipt";
+import type { ScannedReceipt } from "@/types/receipt";
 import { Button } from "@/components/ui/button/Button";
 import { createReceipt } from "@/lib/api";
 
 export default function ReceiptConfirmPage() {
-  const [receipt, setReceipt] = useState<ExtractedReceipt | null>(null);
+  const [receipt, setReceipt] = useState<ScannedReceipt | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
 
@@ -19,7 +19,7 @@ export default function ReceiptConfirmPage() {
       setIsSaving(true);
       await createReceipt(receipt);
       //TDO: uncomment this when we want to clear the pending receipt after saving
-      //sessionStorage.removeItem("pendingExtractedReceipt");
+      //sessionStorage.removeItem("pendingScannedReceipt");
       router.push("/receipts");
     } catch (error) {
       console.error("Failed to save receipt:", error);
@@ -29,20 +29,20 @@ export default function ReceiptConfirmPage() {
   };
 
   const onRetry = () => {
-    sessionStorage.removeItem("pendingExtractedReceipt");
+    sessionStorage.removeItem("pendingScannedReceipt");
     router.push("/receipts");
   };
 
   useEffect(() => {
     try {
-      const raw = sessionStorage.getItem("pendingExtractedReceipt");
+      const raw = sessionStorage.getItem("pendingScannedReceipt");
 
       if (!raw) {
         router.replace("/receipts");
         return;
       }
 
-      const parsed: ExtractedReceipt = JSON.parse(raw);
+      const parsed: ScannedReceipt = JSON.parse(raw);
       setReceipt(parsed);
     } catch (error) {
       console.error("Failed to load pending receipt:", error);

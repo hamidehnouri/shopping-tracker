@@ -32,4 +32,4 @@ export type ReceiptDisplay = {
   items: ReceiptDisplayItem[];
 };
 
-export type ExtractedReceipt = ReceiptDisplay;
+export type ScannedReceipt = ReceiptDisplay;

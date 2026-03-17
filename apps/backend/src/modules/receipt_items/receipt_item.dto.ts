@@ -1,4 +1,4 @@
-export type ExtractedReceiptItemDto = {
+export type ScannedReceiptItemDto = {
   label: string;
   quantity: number;
   unitPrice: number;

@@ -5,7 +5,7 @@ import {
   getReceiptByIdController,
   deleteReceiptController,
 } from "./receipt.controller";
-import { extractReceiptController } from "./extract/receipt_extract.controller";
+import { scanReceiptController } from "./scan/receipt_scan.controller";
 import { categorizeReceiptController } from "./classify/receipt_classify.controller";
 import { upload } from "../../middleware/upload";
 
@@ -13,7 +13,7 @@ const router = Router();
 
 router.post("/", createReceiptController);
 
-router.post("/extract", upload.single("receipt"), extractReceiptController);
+router.post("/scan", upload.single("receipt"), scanReceiptController);
 
 router.post("/:id/categorize", categorizeReceiptController);
 

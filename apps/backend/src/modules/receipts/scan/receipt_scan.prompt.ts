@@ -1,5 +1,5 @@
-export const receiptExtractPrompt =
-  "Extract receipt data from the image and return ONLY JSON matching the schema. " +
+export const receiptScanPrompt =
+  "Scan receipt data from the image and return ONLY JSON matching the schema. " +
   "Accuracy of dates, quantities, unit prices, line totals, and final total is the highest priority. " +
   "Return storeName, purchasedAt, totalAmount, currency, and items. " +
   "Return purchasedAt as ISO-8601 if clearly visible, else null. " +

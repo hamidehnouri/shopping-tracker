@@ -1,17 +1,17 @@
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE ?? "http://192.168.1.158:4001";
 
-export async function extractReceipt(file: File) {
+export async function scanReceipt(file: File) {
   const formData = new FormData();
   formData.append("receipt", file);
 
-  const res = await fetch(`${API_BASE}/api/receipts/extract`, {
+  const res = await fetch(`${API_BASE}/api/receipts/scan`, {
     method: "POST",
     body: formData,
   });
 
   if (!res.ok) {
-    throw new Error("Failed to extract receipt");
+    throw new Error("Failed to scan receipt");
   }
 
   return res.json();

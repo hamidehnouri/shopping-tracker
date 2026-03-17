@@ -1,4 +1,4 @@
-export const receiptExtractJsonSchema = {
+export const receiptScanJsonSchema = {
   type: "object",
   additionalProperties: false,
   properties: {

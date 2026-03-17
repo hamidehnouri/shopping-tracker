@@ -1,15 +1,15 @@
 import type { Request, Response } from "express";
 import { openai } from "../../../config/openai";
-import { receiptExtractJsonSchema } from "./receipt_extract.schema";
-import { receiptExtractPrompt } from "./receipt_extract.prompt";
-import type { ExtractedReceiptDto } from "../receipt.dto";
+import { receiptScanJsonSchema } from "./receipt_scan.schema";
+import { receiptScanPrompt } from "./receipt_scan.prompt";
+import type { ScannedReceiptDto } from "../receipt.dto";
 
 function toDataUrl(file: Express.Multer.File): string {
   const base64 = file.buffer.toString("base64");
   return `data:${file.mimetype};base64,${base64}`;
 }
 
-export async function extractReceiptController(
+export async function scanReceiptController(
   req: Request,
   res: Response,
 ): Promise<void> {
@@ -32,7 +32,7 @@ export async function extractReceiptController(
         {
           role: "user",
           content: [
-            { type: "text", text: receiptExtractPrompt },
+            { type: "text", text: receiptScanPrompt },
             { type: "image_url", image_url: { url: imageUrl } },
           ],
         },
@@ -40,21 +40,21 @@ export async function extractReceiptController(
       response_format: {
         type: "json_schema",
         json_schema: {
-          name: "receipt_extraction",
+          name: "receipt_scan",
           strict: true,
-          schema: receiptExtractJsonSchema,
+          schema: receiptScanJsonSchema,
         },
       },
     });
 
     const jsonText = completion.choices[0]?.message?.content ?? "{}";
-    const extracted = JSON.parse(jsonText) as ExtractedReceiptDto;
+    const scanned = JSON.parse(jsonText) as ScannedReceiptDto;
 
-    extracted.currency = extracted.currency ?? "EUR";
+    scanned.currency = scanned.currency ?? "EUR";
 
-    res.status(200).json(extracted);
+    res.status(200).json(scanned);
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : String(e);
-    res.status(500).json({ error: message || "Extraction failed" });
+    res.status(500).json({ error: message || "Scanion failed" });
   }
 }

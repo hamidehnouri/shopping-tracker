@@ -7,7 +7,9 @@ export default function ReceiptProcessPage() {
       <Loader2 className="mb-4 h-10 w-10 animate-spin text-gray-700" />
 
       <H2>Scanning the receipt...</H2>
-      <Muted className="mt-2">Please wait while we extract the details.</Muted>
+      <Muted className="mt-2">
+        Please wait while we read the receipt details.
+      </Muted>
     </div>
   );
 }
