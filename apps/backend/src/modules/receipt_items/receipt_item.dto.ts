@@ -1,8 +1,8 @@
 export type ScannedReceiptItemDto = {
   label: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
+  quantity: number | null;
+  unitPrice: number | null;
+  totalPrice: number | null;
 };
 
 export type CreateReceiptItemRequestDto = {

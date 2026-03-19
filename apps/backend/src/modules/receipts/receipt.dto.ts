@@ -8,7 +8,7 @@ export type ScannedReceiptDto = {
   storeName: string | null;
   purchasedAt: string | null;
   totalAmount: number | null;
-  currency: string;
+  currency: string | null;
   items: ScannedReceiptItemDto[];
 };
 
