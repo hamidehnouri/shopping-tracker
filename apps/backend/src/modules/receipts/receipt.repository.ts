@@ -7,7 +7,7 @@ export const createReceiptsTable = `
     purchased_at TIMESTAMP,
     total_amount NUMERIC(12, 2),
     currency CHAR(3) DEFAULT 'EUR',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
   )
 `;
 

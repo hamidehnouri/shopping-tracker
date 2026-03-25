@@ -12,8 +12,6 @@ import {
   getReceiptItemsByReceiptId,
   insertReceiptItem,
 } from "../receipt_items/receipt_item.repository";
-import { classifyReceiptLabels } from "./classify/receipt.classify_ai.service";
-import { categorizeReceiptItems } from "./classify/receipt.classify.service";
 
 export async function createReceipt(
   dto: CreateReceiptRequestDto,
@@ -55,15 +53,6 @@ export async function createReceipt(
     throw e;
   } finally {
     client.release();
-  }
-
-  try {
-    if (labels.length > 0) {
-      const classified = await classifyReceiptLabels(labels);
-      await categorizeReceiptItems(receiptId, classified);
-    }
-  } catch (error) {
-    console.error("Receipt categorization failed:", error);
   }
 
   return receiptId;

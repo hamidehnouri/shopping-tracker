@@ -3,7 +3,7 @@ import { openai } from "../../../config/openai";
 import { receiptOcrJsonSchema } from "./receipt_ocr.schema";
 import { receiptOcrPrompt } from "./receipt_ocr.prompt";
 import type { ScannedReceiptDto } from "../receipt.dto";
-import { normalizeItems } from "./normalizer";
+import { normalizeItems } from "./receipt_normalizer";
 
 function toDataUrl(file: Express.Multer.File): string {
   const base64 = file.buffer.toString("base64");
@@ -28,28 +28,28 @@ export async function scanReceiptController(
 
     const imageUrl = toDataUrl(file);
 
-    const completion = await openai.chat.completions.create({
+    const response = await openai.responses.create({
       model: process.env.OPENAI_MODEL ?? "gpt-4o",
-      messages: [
+      input: [
         {
+          type: "message",
           role: "user",
           content: [
-            { type: "text", text: receiptOcrPrompt },
-            { type: "image_url", image_url: { url: imageUrl } },
+            { type: "input_text", text: receiptOcrPrompt },
+            { type: "input_image", image_url: imageUrl, detail: "auto" },
           ],
         },
       ],
-      response_format: {
-        type: "json_schema",
-        json_schema: {
+      text: {
+        format: {
+          type: "json_schema",
           name: "receipt_ocr",
           strict: true,
           schema: receiptOcrJsonSchema,
         },
       },
     });
-
-    const jsonText = completion.choices[0]?.message?.content ?? "{}";
+    const jsonText = response.output_text ?? "{}";
     const ocrResult = JSON.parse(jsonText) as ScannedReceiptDto;
     const items = normalizeItems(ocrResult);
 

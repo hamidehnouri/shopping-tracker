@@ -12,7 +12,7 @@ export const createReceiptItemsTable = `
     category TEXT,
     subcategory TEXT,
     product TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
   )
 `;
 
