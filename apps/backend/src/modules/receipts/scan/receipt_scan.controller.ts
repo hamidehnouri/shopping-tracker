@@ -1,9 +1,11 @@
 import type { Request, Response } from "express";
+import type { ScannedReceiptDto } from "../receipt.dto";
 import { openai } from "../../../config/openai";
 import { receiptOcrJsonSchema } from "./receipt_ocr.schema";
 import { receiptOcrPrompt } from "./receipt_ocr.prompt";
-import type { ScannedReceiptDto } from "../receipt.dto";
-import { normalizeItems } from "./receipt_normalizer";
+import { normalizeItems } from "../../receipt_items/receipt_items_normalizer";
+import { categorizeProducts } from "../../products/product_categorize";
+import { normalizeReceipt } from "./receipt_normalizer";
 
 function toDataUrl(file: Express.Multer.File): string {
   const base64 = file.buffer.toString("base64");
@@ -51,12 +53,17 @@ export async function scanReceiptController(
     });
     const jsonText = response.output_text ?? "{}";
     const ocrResult = JSON.parse(jsonText) as ScannedReceiptDto;
-    const items = normalizeItems(ocrResult);
+    const normalizedReceipt = normalizeReceipt(ocrResult);
+    const items = normalizeItems(normalizedReceipt);
+
+    const categorizedItems = await categorizeProducts({
+      storeName: normalizedReceipt.storeName,
+      items,
+    });
 
     res.status(200).json({
-      ...ocrResult,
-      currency: ocrResult.currency ?? "EUR",
-      items,
+      ...normalizedReceipt,
+      items: categorizedItems,
     });
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : "Receipt scan failed";

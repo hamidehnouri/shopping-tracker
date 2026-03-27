@@ -19,6 +19,8 @@ export type ReceiptListItem = {
 export type ReceiptDisplayItem = {
   id?: number;
   label: string;
+  product: string;
+  category: string;
   quantity: number;
   unitPrice: number;
   totalPrice: number;

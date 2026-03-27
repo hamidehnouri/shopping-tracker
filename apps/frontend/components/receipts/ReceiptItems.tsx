@@ -29,6 +29,14 @@ export default function ReceiptItems({ receipt }: ReceiptItemsProps) {
                 <div className="truncate font-medium text-gray-900">
                   {item.label}
                 </div>
+
+                {(item.product || item.category) && (
+                  <div className="mt-1 text-sm text-gray-500">
+                    {item.product ?? "Unknown product"}
+                    {item.category ? ` · ${item.category}` : ""}
+                  </div>
+                )}
+
                 <div className="mt-1 text-sm text-gray-500 tabular-nums">
                   {item.quantity} ×{" "}
                   {formatMoney(item.unitPrice, receipt.currency)}
